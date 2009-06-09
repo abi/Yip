@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+  "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <title>Yip</title>
+  <script src="resource://yip/content/js/ext/jquery.js"></script>
+  <script type="application/javascript;version=1.7"
+          src="chrome://yip/content/js/browser.js"></script>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Content-Language" content="en-us"/>
+  <link rel="icon" type="image/png" href="resource://yip/content/images/icon.png" />
+</head>
+<body>
+  
+  <script type="text/javascript" charset="utf-8">
+  
+    window.fluid.showGrowlNotification({title:"Yip!", description:"This is a test notification that shows up when you load the about:yip page. Try clicking it!", onclick:function(){
+      fluid.showGrowlNotification(
+        {title:"You just clicked!", 
+        description: "This behavior can be implemented with the onclick callback. Read about:yip for more information."
+      });
+    }});
+    
+  </script>
+  
+  <style type="text/css" media="screen">
+    body{
+      font-family: Garamond, Georgia, sans-serif;
+    }
+    
+    #content{
+      margin:auto;
+      width:400px;
+      text-align: center;
+      margin-top:50px;
+    }
+    
+    h1{
+      margin-bottom:30px;
+    }
+    
+    #footer{
+      margin-top:70px;
+      text-align:center;
+      color:#999;
+    }
+    
+    a{
+      text-decoration: none;
+      color:inherit;
+    }
+    
+    p{
+      width:300px;
+      text-align:justify;
+      font-size:16px;
+      margin:auto;
+      line-height:1.4em;
+      margin-bottom:20px;
+    }
+    
+    p a{
+      border-bottom: 1px solid #999;
+    }
+    
+    ul{
+      list-style: none;
+      padding:0px;
+    }
+    
+    li{
+      font-size:13px;
+      display:inline;
+      font-family: Garamond;
+      cursor:pointer;
+    }
+    
+    li:hover{
+      color:#000;
+    }
+    
+    li:first-child{
+      padding-right:10px;
+    }
+    
+    li:last-child{
+      padding-left:10px;
+    }
+    
+    
+  </style>
+    
+  <div id="content">
+      <img src="resource://yip/content/images/icon.png" />
+      <h1>You're using Yip!</h1>
+      <p>Yip is a small extension that ports the Fluid and Prism notification APIs over to Firefox so you can receive notifications from web applications. If you log into <a href="http://www.meebo.com">Meebo</a> or another site that supports notifications, the next time your friends send you an IM, you should see a notification (obviously, Meebo should not be your focused window/tab at that point).
+      </p>
+      <p>To learn more about Yip, its future and how to support notifications on your site, <a href="http://abcdefu.wordpress.com"> visit this page.</a> Yip's source code is <a href="http://github.com/abi/yip/tree/master">available on Github.</a></p>
+      <ul id="footer">
+        <li><a href="http://abcdefu.wordpress.com"> created by Abi</a></li>
+        <li onclick="platform.showNotification('You clicked the star.', 'Why would you do that?', 'resource://yip/content/images/icon.png')">✭</li>
+        <li><a href="http://www.dapino-colada.nl">icon by Dapino</a></li>
+      </ul>
+  </div>
+  
+</body>
+</html>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <!-- NOTE: We are using jquery 1.2.6. 1.3 has a bug when running from browser.xul (seems to be the same as https://ubiquity.mozilla.com/trac/ticket/535). Only simple workaround is to go back to 1.2.x -->
+  <script src="chrome://yip/content/js/ext/jquery.js"></script>
+  <script type="application/javascript;version=1.7"
+          src="chrome://yip/content/js/browser.js"></script>       
+  <statusbar id="status-bar">
+    <statusbarpanel id="yip-statusbar">   
+      <image id="yip-image" src="chrome://yip/content/images/icon.png"
+             width="16" height="16" style="margin:0 5px"
+             onclick="gYip.openAboutYip()"/>
+    </statusbarpanel>
+  </statusbar>
+</overlay>

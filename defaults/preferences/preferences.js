@@ -1,0 +1,1 @@
+pref("extensions.yip.version", "firstrun");

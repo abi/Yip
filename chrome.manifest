@@ -1,0 +1,3 @@
+resource yip ./
+content yip content/
+overlay chrome://browser/content/browser.xul chrome://yip/content/browser.xul

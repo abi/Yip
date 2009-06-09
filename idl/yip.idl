@@ -1,0 +1,10 @@
+#include "nsISupports.idl"
+
+interface nsIVariant;
+
+[scriptable, uuid(102DF778-5108-11DE-86DB-AAF855D89593)]
+interface nsIYip : nsISupports
+{
+  void showGrowlNotification(in nsIVariant aNotifyObject);
+  void showNotification(in AString aTitle, in AString aText, in AString aImageURI);
+};
