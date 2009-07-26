@@ -20,7 +20,9 @@ Yip.prototype = {
      return interfaces;
   },
   getHelperForLanguage:  function(count) {return null;},
-  showGrowlNotification : function showGrowlNotification(aNotifyObject){
+  // This is where we add support for various notification systems 
+  // such as libnotify, Snarl and Growl for Windows
+  displayNotification : function(aNotifyObject){
     
     var title = aNotifyObject.title ? aNotifyObject.title : "Yip Notification";
     var text = aNotifyObject.description ? aNotifyObject.description : "";
@@ -42,34 +44,53 @@ Yip.prototype = {
       };
     }
     
-    //This is dumb but we have to do this
-    if(icon == "http://www.meebo.com")
-      icon = "http://s2.meebo.com/skin/onyx/img/network/meebome_20_online.png";
+    var osString = Cc["@mozilla.org/xre/app-info;1"]
+                   .getService(Ci.nsIXULRuntime).OS;
+    var msgSent = false;
     
-    try {
-      var classObj = Cc["@mozilla.org/alerts-service;1"];
-      var alertService = classObj.getService(Ci.nsIAlertsService);
-      alertService.showAlertNotification(icon, title, text, textClickable, "", alertListener);
-    } catch (e) {
-      Components.utils.reportError(e);
+    if(osString == "WINNT"){
+      // open the interface to Snarl
+      const cid = "@tlhan-ghun.de/snarlInterface;5";
+      var snarlInterface = Cc[cid].createInstance();
+      snarlInterface = snarlInterface.QueryInterface(Ci.ISNARLINTERFACE);
+      
+      // check if Snarl is running
+      if (snarlInterface.snGetIsRunning()){
+        try{
+          //send notification
+          snarlInterface.snShowMessage(title, text, 15 ,icon,0,0);
+          // avoid that is send again
+          msgSent = true;
+        }catch(e){
+          msgSent = false;
+        }
+      }
+    }else if(osString == "Linux"){
+      //Use libnotify
     }
-
+    
+    if(!msgSent){
+      try {
+        var classObj = Cc["@mozilla.org/alerts-service;1"];
+        var alertService = classObj.getService(Ci.nsIAlertsService);
+        alertService.showAlertNotification(icon, title, text, textClickable, "", alertListener);
+      } catch (e) {
+        Components.utils.reportError(e);
+      }
+    }
+    
+  },
+  showGrowlNotification : function showGrowlNotification(aNotifyObject){
+    this.displayNotification(aNotifyObject);
   },
   showNotification : function showNotification(aTitle, aText, aImageURI){
-    
-    //This is dumb but we have to do this
-    if(aImageURI == "http://www.meebo.com")
-      aImageURI = "http://s2.meebo.com/skin/onyx/img/network/meebome_20_online.png";
-      
-    try {
-      var classObj = Cc["@mozilla.org/alerts-service;1"];
-      var alertService = classObj.getService(Ci.nsIAlertsService);
-      alertService.showAlertNotification(aImageURI, aTitle, aText);
-    } catch (e) {
-      dump(e);
+    var aNotifyObject = {
+      title : aTitle,
+      description : aText,
+      icon : aImageURI
     }
+    this.displayNotification(aNotifyObject);
   }
-  // displayNotification : function(){ //supports all options }
 };
 
 var components = [Yip];
