@@ -47,7 +47,13 @@ Yip.prototype = {
     var osString = Cc["@mozilla.org/xre/app-info;1"]
                    .getService(Ci.nsIXULRuntime).OS;
     var msgSent = false;
-    
+    var id = "yip@foyrek.com";
+    var extension = Cc["@mozilla.org/extensions/manager;1"]
+                    .getService(Ci.nsIExtensionManager)
+                    .getInstallLocation(id)
+                    .getItemLocation(id);
+    var iconPath = "";
+                    
     if(osString == "WINNT"){
       // open the interface to Snarl
       const cid = "@tlhan-ghun.de/snarlInterface;5";
@@ -67,6 +73,24 @@ Yip.prototype = {
       }
     }else if(osString == "Linux"){
       //Use libnotify
+      iconPath = extension.path + "/content/images/icon.png";
+      try {
+       
+        var file = Cc["@mozilla.org/file/local;1"]
+                   .createInstance(Ci.nsILocalFile);
+        file.initWithPath("/usr/bin/notify-send");
+
+        var process = Components.classes["@mozilla.org/process/util;1"]
+            .createInstance(Components.interfaces.nsIProcess);
+        process.init(file);
+        var args = [utf8.encode(title), utf8.encode(text), "-i", iconPath];
+        process.run(false, args, args.length);
+        msgSent = true;
+        
+      }catch(e){
+        msgSent = false;
+      }
+      
     }
     
     if(!msgSent){
