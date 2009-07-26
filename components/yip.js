@@ -26,7 +26,7 @@ Yip.prototype = {
     
     var title = aNotifyObject.title ? aNotifyObject.title : "Yip Notification";
     var text = aNotifyObject.description ? aNotifyObject.description : "";
-    var icon = aNotifyObject.icon ? aNotifyObject.icon : "chrome://yip/content/images/icon.png";
+    var icon = aNotifyObject.icon ? aNotifyObject.icon : "chrome://yip/content/images/icon-32.png";
     var textClickable = false;
     var cookie = "";
     var alertListener = null;
