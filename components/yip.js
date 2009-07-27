@@ -71,6 +71,58 @@ var utf8 = {
  
 }
 
+//Based on the growlgntp Firefox extension and code by Swaroop Hegde
+var growlgntp = {
+  APPNAME : "Yip/Firefox",
+
+  send : function(data){
+    var transportService = Cc["@mozilla.org/network/socket-transport-service;1"]
+                           .getService(Ci.nsISocketTransportService);
+
+    var socket = transportService.createTransport(null, 0, "localhost", 23053, null);
+    socket.setTimeout(socket.TIMEOUT_READ_WRITE, 2);
+    
+    var stream = socket.openOutputStream(0, 0, 0);
+    stream.write(data, data.length);
+    stream.close();
+  },
+
+  init : function() {
+    this.register();
+  },
+
+  register : function(){
+    // get the icon path
+    var id = "yip@foyrek.com";
+    var extension = Cc["@mozilla.org/extensions/manager;1"]
+                    .getService(Ci.nsIExtensionManager)
+                    .getInstallLocation(id)
+                    .getItemLocation(id);
+    var icon = extension.path + "\\content\\images\\icon.png";
+
+    var data = "GNTP/1.0 REGISTER NONE\r\n" +
+             "Application-Name: " + this.APPNAME + "\r\n" +
+             "Application-Icon: " + icon + "\r\n" +
+             "Notifications-Count: 1\r\n" +
+             "\r\n" +
+             "Notification-Name: normal\r\n" +
+             "Notification-Display-Name: normal\r\n" +
+             "Notification-Enabled: True\r\n" +
+             "\r\n";
+    this.send(data);
+  },
+
+  doNotification : function(title, text, icon){
+    var data = "GNTP/1.0 NOTIFY NONE\r\n" +
+             "Application-Name: " + this.APPNAME + "\r\n" +
+             "Notification-Name: normal\r\n" +
+             "Notification-Icon: " + icon + "\r\n" +
+             "Notification-Title: " + title + "\r\n" +
+             "Notification-Text: " + text + "\r\n" +
+             "\r\n";
+    this.send(data);
+  }
+};
 
 function Yip() { }
 
@@ -122,24 +174,61 @@ Yip.prototype = {
                     .getInstallLocation(id)
                     .getItemLocation(id);
     var iconPath = "";
+    var Application = Cc["@mozilla.org/fuel/application;1"]
+                      .getService(Ci.fuelIApplication);
+        
                     
     if(osString == "WINNT"){
-      // open the interface to Snarl
-      const cid = "@tlhan-ghun.de/snarlInterface;5";
-      var snarlInterface = Cc[cid].createInstance();
-      snarlInterface = snarlInterface.QueryInterface(Ci.ISNARLINTERFACE);
       
-      // check if Snarl is running
-      if (snarlInterface.snGetIsRunning()){
+      iconPath = extension.path + "\\content\\images\\icon.png";
+      
+      var GFW_PREF = "extensions.yip.gfw";
+      var tempIcon = "";
+
+      if(Application.prefs.getValue(GFW_PREF, false)){
         try{
-          //send notification
-          snarlInterface.snShowMessage(title, text, 15 ,icon,0,0);
-          // avoid that is send again
+
+          //chrome urls don't work for icons with Growl for Windows
+          if(icon == "chrome://yip/content/images/icon-32.png"){
+            tempIcon = iconPath;
+          }else{
+            tempIcon = icon;
+          }
+
+          growlgntp.register();
+          growlgntp.doNotification(title, text, tempIcon);
           msgSent = true;
         }catch(e){
           msgSent = false;
         }
       }
+      
+      if(!msgSent){
+        // open the interface to Snarl
+        const cid = "@tlhan-ghun.de/snarlInterface;5";
+        var snarlInterface = Cc[cid].createInstance();
+        snarlInterface = snarlInterface.QueryInterface(Ci.ISNARLINTERFACE);
+        
+        //http and chrome urls don't work for icons with Snarl
+        if(icon == "chrome://yip/content/images/icon-32.png"){
+          tempIcon = iconPath;
+        }else{
+          tempIcon = icon;
+        }
+        
+        // check if Snarl is running
+        if (snarlInterface.snGetIsRunning()){
+          try{
+            //send notification
+            snarlInterface.snShowMessage(title, text, 15 ,tempIcon,0,0);
+            // avoid that is send again
+            msgSent = true;
+          }catch(e){
+            msgSent = false;
+          }
+        }
+      }
+      
     }else if(osString == "Linux"){
       //Use libnotify
       iconPath = extension.path + "/content/images/icon.png";
