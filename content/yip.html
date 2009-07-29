@@ -85,6 +85,9 @@
       padding-left:10px;
     }
     
+    .new-info{
+/*      background:#999999;
+*/    }
     
   </style>
     
@@ -94,12 +97,48 @@
       <p>Yip is a small extension that ports the Fluid and Prism notification APIs over to Firefox so you can receive notifications from web applications. If you log into <a href="http://www.meebo.com">Meebo</a> or another site that supports notifications, the next time your friends send you an IM, you should see a notification (obviously, Meebo should not be your focused window/tab at that point).
       </p>
       <p>To learn more about Yip, its future and how to support notifications on your site, <a href="http://www.yipyip.com"> visit this page.</a> Yip's source code is <a href="http://github.com/abi/yip/tree/master">available on Github.</a></p>
+      <div class="new-info">
+        <p>With version 0.2, Yip supports <a href="http://www.fullphat.net/index.php">Snarl</a> and <a href="http://growlforwindows.com/gfw/">Growl for Windows</a>. If you have Snarl installed and running, Yip will automatically use it to send notifications.</p>
+        <p>To get <a href="http://www.markshuttleworth.com/archives/265">libnotify notifications</a> working on Linux, you need to install libnotify-bin using the Synaptic Package Manager on Ubuntu or run "sudo aptitude install libnotify-bin" for all distros.</p>
+      </div>
       <ul id="footer">
         <li><a href="http://www.abi.sh"> created by Abi</a></li>
-        <li onclick="platform.showNotification('You clicked the star.', 'Why would you do that?', 'resource://yip/content/images/icon-32.png')">✭</li>
+        <li onclick="platform.showNotification('You clicked the star.', 'Why would you do that?', 'chrome://yip/content/images/icon-32.png')">✭</li>
         <li><a href="http://www.dapino-colada.nl">icon by Dapino</a></li>
       </ul>
   </div>
   
+  <script type="text/javascript" charset="utf-8">
+    const Ci = Components.interfaces;
+    const Cc = Components.classes;
+    
+    var osString = Cc["@mozilla.org/xre/app-info;1"]
+                   .getService(Ci.nsIXULRuntime).OS;
+    var Application = Cc["@mozilla.org/fuel/application;1"]
+                     .getService(Ci.fuelIApplication);
+    var GFW_PREF = "extensions.yip.gfw";
+                   
+    if(osString == "WINNT"){
+      
+      $(".new-info > p:first-child").after("<div><p>If you want to use Growl on Windows, check the box below:</p><p><label for='gfw' style='font-weight:bold;'> Use Growl for Windows </label><input type='checkbox' name='gfw' value='gfw' id='gfw' /></p><p id='gfw-warning' style='display:none;color:#922233'>Make sure Growl for Windows is open. If not, you will not receive any notifications.</p></div>");
+      
+      $(":checkbox").click(function(){
+       if($(this).is(":checked")){
+         Application.prefs.setValue(GFW_PREF, true);
+         $("#gfw-warning").show();
+       }else{
+         Application.prefs.setValue(GFW_PREF, false);
+         $("#gfw-warning").hide();
+       }
+      });
+      
+      if(Application.prefs.getValue(GFW_PREF, false)){
+        $("#gfw").attr("checked", "true");
+        $("#gfw-warning").show();
+      }
+      
+    }
+    
+  </script>
 </body>
 </html>

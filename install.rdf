@@ -4,7 +4,7 @@
      xmlns:em="http://www.mozilla.org/2004/em-rdf#">
   <Description about="urn:mozilla:install-manifest">
     <em:id>yip@foyrek.com</em:id>
-    <em:version>0.1</em:version>
+    <em:version>0.2</em:version>
 
     <!-- Target Application this extension can install into, 
          with minimum and maximum supported versions. --> 
@@ -21,7 +21,7 @@
     <em:description>Notifications for Web Apps</em:description>
     <em:creator>Abimanyu Raja</em:creator>
     <em:iconURL>chrome://yip/content/images/icon.png</em:iconURL>
-    <em:homepageURL>http://abcdefu.wordpress.com/</em:homepageURL>
+    <em:homepageURL>http://www.abi.sh</em:homepageURL>
     <em:updateURL>http://www.foyrek.com/yip/update.rdf</em:updateURL>
     <em:updateKey>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCxTfPIbnVZ6apY54iHhI2Ie6pnextOfWz5bKKV0ixoyHay+f3s/vzGfBTxrNx/J2pvxtXWSP3Q/aApy168WytcMKlr2kM9vtWHJTleqYcWLMd2vfwO9owXrnoC7eCq1AX7j8KlCzbiUX/A1hWwTOH1+RMH7e7FXStQaUwE3Zhb/QIDAQAB</em:updateKey>
   </Description>
