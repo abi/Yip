@@ -219,8 +219,18 @@ Yip.prototype = {
         // check if Snarl is running
         if (snarlInterface.snGetIsRunning()){
           try{
+            // get the window which has been generated in the observer
+             var generateWindow = snarlInterface.snGetWindowHandle("YipWnd"); 
             //send notification
-            snarlInterface.snShowMessage(title, text, 15 ,tempIcon,0,0);
+            var snarlMsgId = snarlInterface.snShowMessageEx(title, text, 15 ,tempIcon,0,0, "", "Notification");
+            // Tell the Snarl interface / obverser what to do if notification is clicked
+            
+            // for testing - can't see I need to do here...
+            var targetUrl = "http://www.heise.de/"
+            
+            Components.classes["@mozilla.org/observer-service;1"]
+              .getService(Components.interfaces.nsIObserverService)
+              .notifyObservers(null, "SnarlInterfaceRegisterACKCommand", snarlMsgId + " " + targetUrl);
             // avoid that is send again
             msgSent = true;
           }catch(e){
