@@ -23,6 +23,7 @@ interface ISNARLINTERFACE : nsISupports
   long snShowNotification(in AString Class, in AString Title, in AString Text, in long Timeout, in AString Icon, in long hWndReply, in long uReplyMsg, in AString Sound);
   long snChangeAttribute(in long Id, in long Attr, in AString Value); // Attr is a long because Mozilla doesn't support enums here
   long snGetRevision();
+  long snGetCurrentMsgWindowHandle();
   long snSetClassDefault(in AString As, in long Attr, in AString Value);
   long snAddClass(in AString Class, in AString Description, in long Flags, in AString DefaultTitle, in AString DefaultIcon, in AString DefaultTimeout);
 };
