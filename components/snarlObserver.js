@@ -4,8 +4,8 @@ const snarlExtensionId  = "yip@foyrek.com";
 const snarlAppIconName  = "icon.png"; //filename of icon to be displayed on notifications and used during registration with Snarl
 const cid = "@tlhan-ghun.de/snarlInterface;5"; // id of SnarlInterface - should be OK
 
-var osString = Cc["@mozilla.org/xre/app-info;1"]
-                   .getService(Ci.nsIXULRuntime).OS;
+var osString = Components.classes["@mozilla.org/xre/app-info;1"]
+                   .getService(Components.interfaces.nsIXULRuntime).OS;
 
 
 if(osString == "WINNT") {
@@ -15,7 +15,7 @@ var snarlInterface = Components.classes[cid].createInstance();
 snarlInterface = snarlInterface.QueryInterface(Components.interfaces.ISNARLINTERFACE);
 
 // some arrays for later use
-var snarlNotificationsClickcommand = new Array();
+var snarlNotificationsClickedCommand = new Array();
 
 
 function SnarlStartAndStopObserver() {
@@ -85,91 +85,21 @@ SnarlStartAndStopObserver.prototype = {
       var msgId = aData.match(/^[0-9]*/);
       var content = aData.replace(/^[0-9]*\ /,"");
       snarlNotificationsClickedCommand[msgId] = content;
-      
-            
-      // To fill this array you would write something like
-      // the following somewhere in your code:
-        //  var msgId = snarlInterface.snShowMessageEx("Some text", "Some text", 15, "Some icon path",0,0,"","Some alert class";
-        //  Components.classes["@mozilla.org/observer-service;1"]
-        //      .getService(Components.interfaces.nsIObserverService)
-        //      .notifyObservers(null, "SnarlInterfaceRegisterACKCommand", msgId + " Some command");
-
-      
       break;
     
-    case "SnarlInterfaceRegisterACKParameter":
-      // we store information on notification IDs and the belonging reason
-      // here in a central array
-      var msgId = aData.match(/^[0-9]*/);
-      var content = aData.replace(/^[0-9]*\ /,"");
-      snarlNotificationsACKParameter[msgId] = content;          
-      break;
-      
-    case "SnarlInterfaceRegisterMiddleCommand":
-        var msgId = aData.match(/^[0-9]*/);
-        var content = aData.replace(/^[0-9]*\ /, "");
-        snarlNotificationsMiddleCommand[msgId] = content;
-        break;
-                
-    case "SnarlInterfaceRegisterMiddleParameter":
-        var msgId = aData.match(/^[0-9]*/);
-        var content = aData.replace(/^[0-9]*\ /, "");
-        snarlNotificationsMiddleParameter[msgId] = content;
-        break;                
-                  
-                  
-    case "SnarlInterfaceRegisterClickedCommand":      
-      // we store information on notification IDs and the belonging reason
-      // here in a central array
-      var msgId = aData.match(/^[0-9]*/);
-      var content = aData.replace(/^[0-9]*\ /,"");
-      snarlNotificationsClickedCommand[msgId] = content;
-      break;
-    
-    case "SnarlInterfaceRegisterClickedParameter":
-      // we store information on notification IDs and the belonging reason
-      // here in a central array
-      var msgId = aData.match(/^[0-9]*/);
-      var content = aData.replace(/^[0-9]*\ /,"");
-      snarlNotificationsClickedParameter[msgId] = content;          
-      break;
-      
     case "SnarlInterfaceACK":
-      // this called when a notification is clicked with the left mouse button
-      // we look in the central array what shall be done      
-      if (snarlNotificationsACKCommand[aData] == "Some command") {
-        // Do something
-      }
-      break;
-    
     case "SnarlInterfaceClicked":
-      // this called when a notification is clicked with the right mouse button
-      // we look in the central array what shall be done      
-      if (snarlNotificationsClickedCommand[aData] == "Another command") {
-        // Do something
-      }
-      if (snarlNotificationsClickedCommand[aData] == "Make sticky") {
-        // this example would make the notification sticky
-        var response = snarlInterface.snSetTimeout(aData,0);
-      }
-      break;
-
     case "SnarlInterfaceMiddleMouseButton":
-      // this called when a notification is clicked with the middle mouse button
-      // we look in the central array what shall be done      
-      if (snarlNotificationsMiddleCommand[aData] == "Another command") {
-        // Do something
-      }
-      if (snarlNotificationsMiddleCommand[aData] == "Make sticky") {
-        // this example would make the notification sticky
-        var response = snarlInterface.snSetTimeout(aData,0);
-      }
-      break;
+      // snarlNotificationsClickcommand[aData]
+    break;
 
 
 
-    case "SnarlInterfaceTimedOut") {      
-      // something
+
+    case "SnarlInterfaceTimedOut":
+      var msgId = aData.match(/^[0-9]*/);
+      var content = aData.replace(/^[0-9]*\ /,"");
+      snarlNotificationsClickedCommand[msgId] = null;
       break;    
   
     case "SnarlInterfaceStatus":     
@@ -221,7 +151,7 @@ function FactoryHolder(aObj) {
 var gModule = {
   registerSelf: function (aComponentManager, aFileSpec, aLocation, aType)
   {
-ew4    aComponentManager.QueryInterface(CI.nsIComponentRegistrar);
+    aComponentManager.QueryInterface(CI.nsIComponentRegistrar);
     for (var key in this._objects) {
       var obj = this._objects[key];
       aComponentManager.registerFactoryLocation(obj.CID, obj.className,
