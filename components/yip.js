@@ -223,15 +223,18 @@ Yip.prototype = {
              var generateWindow = snarlInterface.snGetWindowHandle("YipWnd"); 
             //send notification
             var snarlMsgId = snarlInterface.snShowMessageEx(title, text, 15 ,tempIcon,0,0, "", "Notification");
+            
+            // The code below is commented out untill we can onclick handlers to work
+            
             // Tell the Snarl interface / obverser what to do if notification is clicked
-            
             // for testing - can't see I need to do here...
-            var targetUrl = "http://www.heise.de/"
+            // var targetUrl = "http://www.heise.de/"
+            //             
+            //             Components.classes["@mozilla.org/observer-service;1"]
+            //               .getService(Components.interfaces.nsIObserverService)
+            //               .notifyObservers(null, "SnarlInterfaceRegisterACKCommand", snarlMsgId + " " + targetUrl);
             
-            Components.classes["@mozilla.org/observer-service;1"]
-              .getService(Components.interfaces.nsIObserverService)
-              .notifyObservers(null, "SnarlInterfaceRegisterACKCommand", snarlMsgId + " " + targetUrl);
-            // avoid that is send again
+            // avoid sending it again
             msgSent = true;
           }catch(e){
             msgSent = false;
